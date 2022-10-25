@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -5,17 +6,10 @@ import java.util.Scanner;
 public class Main {
 
 
-
-
-
-
-
-
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         boolean internetStatus = false;
+        boolean firewallPlace = false;
         boolean firewallStatus = false;
-        boolean firewallWorkPas = false;
         boolean antivirusStatus = false;
         boolean antivirusWorkPas = false;
         boolean antivirusTest = false;
@@ -25,7 +19,7 @@ public class Main {
                         "######################################################\n" +
                         "1) Проверка доступа к интернету\n" +
                         "2) Проверка наличеия установленного межсетевого экрана\n" +
-                        "3)Провека работоспособности межсетевого экрана\n" +
+                        "3) Провека работоспособности межсетевого экрана\n" +
                         "######################################################\n\n" +
                         "Проверка антивирусного ПО\n" +
                         "######################################################\n" +
@@ -44,16 +38,25 @@ public class Main {
             System.out.println("> ");
             switch (Integer.parseInt(scanner.next())){
                 case 1:
-                    InternetConnection internetConnection = new InternetConnection();
+                    InternetWorker internetConnection = InternetWorker.getInstance();
                     internetConnection.checkInternetConnection();
-                    if(internetConnection.isInternetConnection()){
+                    if(internetConnection.resultOfInternetConnectionTest()){
                         internetStatus = true;
                     }
                     break;
                 case 2:
-                    new FireWall().checkExist();
+                    FireWall fireWallExist = FireWall.getInstance();
+                    fireWallExist.checkExist();
+                    if(fireWallExist.isExist()){
+                        firewallPlace = true;
+                    }
                     break;
                 case 3:
+                    FireWall fireWallState = FireWall.getInstance();
+                    fireWallState.checkStatus();
+                    if(fireWallState.isStatus()){
+                        firewallStatus = true;
+                    }
                     break;
                 case 4:
                     break;
