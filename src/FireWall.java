@@ -1,13 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class FireWall {
 
     private boolean status = false;
     private boolean exist = false;
-
 
     private static FireWall INSTANCE;
 
@@ -29,41 +27,43 @@ public class FireWall {
     }
 
     public void checkStatus()  {
-        String[] cmd = {"/bin/bash","-c","echo 0102| sudo -S firewall-cmd --status"};
-        Process pb = null;
+        String[] cmd = {"/bin/bash","-c","echo 0102| sudo -S firewall-cmd --state"};
+        Process pb;
         try{
-
             pb = Runtime.getRuntime().exec(cmd);
             String line;
             BufferedReader input = new BufferedReader(new InputStreamReader(pb.getInputStream()));
             while ((line = input.readLine()) != null) {
-                System.out.println(line);
                 if (line.equals("running")){
                     status = true;
                     System.out.println("Межсетевой экран функционирует правильно!");
                 }
             }
             input.close();
-
+            if(!status){
+                System.out.println("Межсетевой экран функционирует неверно, или не функционирует вовсе!");
+            }
         }
         catch (IOException e){
             System.out.println("Межсетевой экран функционирует неверно, или не функционирует вовсе!");
         }
-
     }
 
     public void checkExist(){
-        String[] cmd = {"whereis","firewalld"};
-        Process pb = null;
+        String[] cmd = {"/bin/bash","-c","echo 0102| sudo -S firewall-cmd --version"};
+        Process pb;
         try {
             pb = Runtime.getRuntime().exec(cmd);
             String line;
             BufferedReader input = new BufferedReader(new InputStreamReader(pb.getInputStream()));
             while ((line = input.readLine()) != null) {
-                if (line.split(" ").length > 1){
+                if (line.equals("1.1.1")){
                     exist = true;
                     System.out.println("Межсетевой экран firewalld установлен!");
                 }
+            }
+            if (!exist){
+                System.out.println("Межсетевой экран firewalld неустановлен!");
             }
             input.close();
         } catch (IOException e) {

@@ -6,7 +6,6 @@ import java.net.URLConnection;
 
 class InternetWorker {
     private boolean internetConnection;
-    private boolean firewallTest;
 
     private static InternetWorker INSTANCE;
 
@@ -23,27 +22,6 @@ class InternetWorker {
         return internetConnection;
     }
 
-    public boolean resultOfFirewallTest() {
-        return firewallTest;
-    }
-
-    public void testFirewall(){
-        try {
-            URL url = new URL("https://www.google.ru/");
-            URLConnection connection = url.openConnection();
-            connection.connect();
-            System.out.println("Internet is connected");
-            firewallTest = true;
-        } catch (MalformedURLException e) {
-            System.out.println("Internet is not connected");
-            firewallTest = false;
-
-        } catch (IOException e) {
-            System.out.println("Internet is not connected");
-            firewallTest = false;
-        }
-    }
-
 
     public void checkInternetConnection() throws IOException {
         try {
@@ -57,9 +35,12 @@ class InternetWorker {
             int code = con.getResponseCode();
             if (code == 200) {
                 internetConnection = true;
+                System.out.println("Интернет подключен!");
             }
+            else System.out.println("Интернет не подключен!");
         } catch (Exception e) {
             internetConnection = false;
+            System.out.println("Интернет не подключен!");
 
         }
     }

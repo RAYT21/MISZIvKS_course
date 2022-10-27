@@ -7,69 +7,76 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        boolean internetStatus = false;
-        boolean firewallPlace = false;
-        boolean firewallStatus = false;
-        boolean antivirusStatus = false;
-        boolean antivirusWorkPas = false;
-        boolean antivirusTest = false;
 
 
+        System.out.println("Добро пожаловать в программу проверки компьютерной безопасности!\n");
         System.out.println("Проверка межсетевого экрана\n" +
                         "######################################################\n" +
                         "1) Проверка доступа к интернету\n" +
                         "2) Проверка наличеия установленного межсетевого экрана\n" +
                         "3) Провека работоспособности межсетевого экрана\n" +
-                        "######################################################\n\n" +
+                        "######################################################\n" +
                         "Проверка антивирусного ПО\n" +
                         "######################################################\n" +
                         "4) Проверка наличеия установленного антивируса\n"+
                         "5) Проверка работоспособности антивирусного ПО\n"+
-                        "6) Тестирование антивирусного ПО\n"+
                         "######################################################\n"+
-                        "7) Вывести результаты\n"+
-                        "8) Сохранить результаты в файл\n"+
-                        "9) Выйти"
+                        "6) Вывести результаты\n"+
+                        "7) Сохранить результаты в файл\n"+
+                        "8) Выйти"
 
         );
         Scanner scanner = new Scanner(System.in);
         System.out.println("Введите номер пункта который хотите выполнить: ");
         while(true){
-            System.out.println("> ");
+            System.out.print("> ");
             switch (Integer.parseInt(scanner.next())){
                 case 1:
-                    InternetWorker internetConnection = InternetWorker.getInstance();
-                    internetConnection.checkInternetConnection();
-                    if(internetConnection.resultOfInternetConnectionTest()){
-                        internetStatus = true;
-                    }
+                    InternetWorker.getInstance().checkInternetConnection();
+                    ResultEditor.getInstance().setInternetStatus(
+                            InternetWorker.getInstance().resultOfInternetConnectionTest()
+                    );
                     break;
                 case 2:
-                    FireWall fireWallExist = FireWall.getInstance();
-                    fireWallExist.checkExist();
-                    if(fireWallExist.isExist()){
-                        firewallPlace = true;
-                    }
+                    FireWall.getInstance().checkExist();
+                    ResultEditor.getInstance().setFirewallPlace(
+                            FireWall.getInstance().isExist()
+                    );
                     break;
                 case 3:
-                    FireWall fireWallState = FireWall.getInstance();
-                    fireWallState.checkStatus();
-                    if(fireWallState.isStatus()){
-                        firewallStatus = true;
+                    if (ResultEditor.getInstance().isFirewallPlace() == null){
+                        System.out.println("Сначала выполните пункт 2");
+                        break;
                     }
+                    FireWall.getInstance().checkStatus();
+                    ResultEditor.getInstance().setFirewallStatus(
+                            FireWall.getInstance().isStatus()
+                    );
                     break;
                 case 4:
+                    Antivirus.getInstance().checkExist();
+                    ResultEditor.getInstance().setAntivirusExist(
+                            Antivirus.getInstance().isExist()
+                    );
                     break;
                 case 5:
+                    if (ResultEditor.getInstance().isAntivirusExist() == null){
+                        System.out.println("Сначала выполните пункт 4");
+                        break;
+                    }
+                    Antivirus.getInstance().checkStatus();
+                    ResultEditor.getInstance().setAntivirusStatus(
+                            Antivirus.getInstance().isStatus()
+                    );
                     break;
                 case 6:
+                    System.out.println(ResultEditor.getInstance());
                     break;
                 case 7:
+                    ResultEditor.getInstance().fileOutPut();
                     break;
                 case 8:
-                    break;
-                case 9:
-                    break;
+                    return;
                 default:
                     System.out.println("Введена неверная позиция");
             }
